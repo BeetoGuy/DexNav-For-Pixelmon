@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "DexNav",
+    "name": "DexNav",
+    "description": "The Pokedex RNG manipulator from Omega Ruby and Alpha Sapphire",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://patreon.com/Beeto",
+    "updateUrl": "",
+    "authorList": [
+      "Beeto"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
