@@ -5,21 +5,11 @@ import dexnav.capability.CapabilityDexTracker;
 import dexnav.capability.DexPlayer;
 import dexnav.capability.IDexTracker;
 import dexnav.event.DexNavEventHandler;
-import dexnav.util.DexNavSaveManager;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.server.FMLServerHandler;
 
 import java.util.Random;
 
@@ -27,7 +17,7 @@ import java.util.Random;
         modid = DexNav.MOD_ID,
         name = DexNav.MOD_NAME,
         version = DexNav.VERSION,
-        dependencies = "required-after:pixelmon@[7.2.0,)"
+        dependencies = "required-after:pixelmon@[8.0.0,)"
 )
 public class DexNav {
 
@@ -57,11 +47,6 @@ public class DexNav {
 
     @Mod.EventHandler
     public void onServerStop(FMLServerStoppingEvent evt) {
-        if (!FMLServerHandler.instance().getServer().getPlayerList().getPlayers().isEmpty()) {
-            for (EntityPlayerMP player : FMLServerHandler.instance().getServer().getPlayerList().getPlayers()) {
-                DexNavSaveManager man = new DexNavSaveManager(player);
-                man.writeToFile();
-            }
-        }
+        DexNavEventHandler.clearCache();
     }
 }

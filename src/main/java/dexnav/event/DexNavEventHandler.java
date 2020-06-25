@@ -40,14 +40,21 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class DexNavEventHandler {
+    private static List<EntityPlayerMP> playerCache = Lists.newArrayList();
+
     public static IDexTracker getPlayer(EntityPlayer player) {
         return player.getCapability(CapabilityDexTracker.TRACKER, EnumFacing.UP);
+    }
+
+    public static void clearCache() {
+        playerCache.clear();
     }
 
     public static class ForgeEvents {
@@ -89,6 +96,7 @@ public class DexNavEventHandler {
         @SubscribeEvent
         public void onPlayerLogin(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent evt) {
             if (evt.player instanceof EntityPlayerMP) {
+                playerCache.add((EntityPlayerMP)evt.player);
                 DexNavSaveManager man = new DexNavSaveManager((EntityPlayerMP) evt.player);
                 man.readFromFile();
             }
@@ -97,8 +105,27 @@ public class DexNavEventHandler {
         @SubscribeEvent
         public void onPlayerLogout(net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent evt) {
             if (evt.player instanceof EntityPlayerMP) {
+                playerCache.remove(evt.player);
                 DexNavSaveManager man = new DexNavSaveManager((EntityPlayerMP) evt.player);
                 man.writeToFile();
+            }
+        }
+
+        private int tick = 0;
+
+        @SubscribeEvent
+        public void onServerTick(TickEvent.ServerTickEvent evt) {
+            if (evt.phase == TickEvent.Phase.END) {
+                tick++;
+                if (tick >= 120) {
+                    tick = 0;
+                    if (!playerCache.isEmpty()) {
+                        for (EntityPlayerMP player : playerCache) {
+                            DexNavSaveManager man = new DexNavSaveManager(player);
+                            man.writeToFile();
+                        }
+                    }
+                }
             }
         }
     }

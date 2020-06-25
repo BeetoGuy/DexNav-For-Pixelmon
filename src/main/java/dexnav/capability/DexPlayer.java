@@ -33,7 +33,7 @@ public class DexPlayer implements IDexTracker {
     public NBTTagCompound getPokedexMap() {
         NBTTagCompound tag = new NBTTagCompound();
         if (!DEXNAV.isEmpty()) {
-            int[] array = new int[809];
+            int[] array = new int[896];
             for (int i = 0; i < array.length; i++) {
                 short natDex = (short)(1 + i);
                 array[i] = DEXNAV.containsKey(natDex) ? DEXNAV.get(natDex) : 0;
